@@ -1,0 +1,3 @@
+﻿Solution:
+
+A solution is a container that holds different projects.

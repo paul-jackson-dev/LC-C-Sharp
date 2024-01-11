@@ -1,0 +1,14 @@
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\bin\Debug\net8.0\HelloPaul.exe
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\bin\Debug\net8.0\HelloPaul.deps.json
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\bin\Debug\net8.0\HelloPaul.runtimeconfig.json
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\bin\Debug\net8.0\HelloPaul.dll
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\bin\Debug\net8.0\HelloPaul.pdb
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\obj\Debug\net8.0\HelloPaul.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\obj\Debug\net8.0\HelloPaul.AssemblyInfoInputs.cache
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\obj\Debug\net8.0\HelloPaul.AssemblyInfo.cs
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\obj\Debug\net8.0\HelloPaul.csproj.CoreCompileInputs.cache
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\obj\Debug\net8.0\HelloPaul.dll
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\obj\Debug\net8.0\refint\HelloPaul.dll
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\obj\Debug\net8.0\HelloPaul.pdb
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\obj\Debug\net8.0\HelloPaul.genruntimeconfig.cache
+C:\Users\great\OneDrive\Desktop\LC-C-Sharp\Hi\HelloPaul\obj\Debug\net8.0\ref\HelloPaul.dll
