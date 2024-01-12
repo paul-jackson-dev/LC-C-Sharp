@@ -1,3 +1,100 @@
 ﻿Solution:
 
 A solution is a container that holds different projects.
+
+Typing:
+Even though C# is a statically typed language, we can type variables as var and the compiler will infer the type. Aviod using var.
+
+Built In Types: (primitive types)
+In C#, all of the built in types are objects and have short names that break naming convention. We can also use the official .NET classname?
+
+Short name	.NET Class	Examples	Notes
+int		Int32		-5, 1024	
+float		Single		1.212, 3.14	
+double		Double		3.14159, 2.0	Doubles are twice as precise (i.e. can hold much longer decimal numbers than floats)
+char		Char		‘a’, ‘!’	A single Unicode character. Must be enclosed in single quotes '' to be a character; double quotes "" indicate a string
+bool		Boolean		true, false	Note that booleans in C# are not capitalized as they are in Python
+
+Primitive types are immutable.
+
+
+Non-primitive types
+string is another built-in type in C# and it is also a non-primitive data type.
+
+Numeric types such as int and double may be freely mixed when using numeric operators. 
+Generally, the result of such mixing is that the output has the type of the more precise input. 
+
+Reference and Value Types:
+Value types: int, float, double, char, bool, (all other built in types)
+
+Reference types: All Class Types. Dog myDog = new Dog();
+Variables and parameters that are of the type of a class are said to be of reference type (in contrast to primitive type). In plain English, we would say of the C# example: “myDog is a reference variable of type Dog.
+Classes define reference types. A variable of a reference type (such as myDog above) does not actually store the object in question. Instead, it stores a reference to the object. A reference is literally a memory address. We visualize references as an arrow pointing to the object in memory.
+
+Boxing:
+All types in C# are treated as objects. Even value types. This can be accomplished through processes called boxing and unboxing. Converting from a value type to a reference type is called boxing, and the reverse process (reference to value) is called unboxing. C# is known as a unified type system because it implicitly boxes values types to be treated as objects.
+
+   int i = 123;     // This is a value type.
+   object o = i;    // Boxing the value type into a reference type.
+   int j = (int)o;  // Unboxing the reference type back into a value type.
+
+
+using: (import statement)
+The using statement in C# allows us to access classes, methods, and data stored in different files other than the one we are currently in.
+assuming. 
+	1. The C# compiler must know that the class exists.
+	2. You must use the full name of the class.
+Classes that are available may be those in the project you are currently working on, or those that come along with the .NET class library, as well as anything you might get from added dependencies.
+System.Console can simply be access using Console. System is the namespace, Console is the class.
+
+Input/Output:
+Console.WriteLine can take parameters of various types, including string, char, double, bool, and others. We must manually concatenate strings or other values if we want to print a composite value.
+   int year = 2020;
+   Console.WriteLine("Hello" + "World")
+   Console.WriteLine("The year is " + year.ToString());
+
+Console.ReadLine returns input as a string.
+To convert it to a desired type, you can generally use the syntax [TYPE].Parse(value
+   string userInput = Console.ReadLine();
+   int year = int.Parse(userInput); // use int type to cast parsed input
+
+Strings, Characters, and Arrays:
+Strings are immutable which means any given character cannot be changed.
+
+String Methods:
+@ initializes a string as a literal
+string newPath = @"c:\Program Files\Microsoft Visual Studio 9.0";
+
+C# Syntax		Description
+str.Substring(3,1)	Returns the character in 3rd position, (a).
+str.Substring(2,3)	Return substring from 2nd to 4th, i.e. substring starting at index 2 and 3 characters long, (tab).
+str.Length		Tells us the length of the string, (8).
+str.IndexOf('a')	Returns the index for the first occurrence of ‘a’, (3).
+str.Split('a')		Splits the string into sections at each delimiter and stores the sections as elements in an array, ({Rut, b, g}).
+str + str		Concatenate two strings together, (RutabagaRutabaga).
+str.Trim()		Removes any whitespace at the beginning or end of the string, (Rutabaga — there’s not whitespace here).
+str.ToUpper(), str.ToLower()	Changes all alphabetic characters in the string to UPPERCASE or lowercase, respectively,(RUTABAGA, rutabaga).
+
+Arrays: (fixed size that cannot change)
+int[] someInts = new int[10]; // stores an array of 10 integers
+int[] someOtherInts = {1, 1, 2, 3, 5, 8}; // literal expression
+
+Objects:
+In C#, objects are structures that have a state and a set of behaviors. The state of an object includes properties/data that the coder can define and modify. Behaviors are actions that run when requested, and they can be used to evaluate, manipulate, or return data.
+
+Static Methods:
+Behave somewhat similarly to stand-alone functions. 
+A static method is one that can be called without creating an object instance of the class to which it belongs.
+
+Main() Methods:
+Starting in .NET 6 the Main() method is synthesized.
+
+
+
+
+
+
+
+
+
+
