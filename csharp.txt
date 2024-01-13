@@ -89,6 +89,117 @@ A static method is one that can be called without creating an object instance of
 Main() Methods:
 Starting in .NET 6 the Main() method is synthesized.
 
+Loops:
+
+for Loop:
+for (int i = 0; i < 10; i++ ) {
+   Console.WriteLine(i);
+}
+
+foreach Loop:
+int[] nums = {1, 1, 2, 3, 5, 8, 13, 21};
+
+foreach (int n in nums) {
+   Console.WriteLine(n);
+}
+
+string msg = "Hello World";
+
+foreach (char c in msg.ToCharArray()) {
+   Console.WriteLine(c);
+}
+
+while Loop:
+int w = 0;
+while (w < 3) {
+   w++;
+}
+
+do-while Loop:
+do {
+   Console.WriteLine("Hello, World");
+} while (false);
+
+StringBuilder:
+while something like sentence += word is fine, it can use a lot of resources if the sentence is long since strings are immutable and a new string object is created each iteration.
+We can use the StringBuilder class to create a single object since it is mutable.
+
+StringBuilder newFinalSentence = new StringBuilder();
+
+foreach (string word in arrayOfWords) {
+   newFinalSentence.Append(word);
+}
+
+Data Structures:
+A data structure lets us hold on to lots of data in a single place. It is a programming construct to aggregate many values into one value. Many types of data structures exist in various languages. A few examples are lists, dictionaries, arrays, tuples, etc.
+
+Collections:
+using System.Collections.Generic;
+
+List:
+List<string> students = new List<string>();
+students.Add(newStudent);
+or 
+List<string> newList = new List<string> {"Apples", "Oranges", "Avocados"};
+students.Count // to get List length
+
+List Methods in C#:
+ .IndexOf()
+ .Add()
+ .Contains()
+ .Sort()
+ .ToArray()
+
+Array:
+Arrays are faster than List
+int maxStudents = 30;
+string[] students = new string[maxStudents];
+students[i] = newStudent; // to add
+
+Dictionary: Key/Value pair
+Dictionary<string, double> students = new Dictionary<string, double>();
+or 
+Dictionary<int, string> groceries = new Dictionary<int, string>
+{
+   {2, "Apples"},
+   {3, "Oranges"},
+   {1, "Avocado"}
+};
+students.Add(newStudent, newGrade); // Key, Value
+
+string name = "jesse";
+double jesseGrade = students[name];
+
+// for key and value
+foreach (KeyValuePair<string, double> student in students) {
+   Console.WriteLine(student.Key + " (" + student.Value + ")");
+   sum += student.Value;
+}
+
+// for key
+foreach (string studentName in students.Keys) {
+   Console.WriteLine(studentName);
+}
+
+// for value
+foreach (double grade in students.Values) {
+   Console.WriteLine(grade);
+}
+
+Dictionary Methods in C#:
+.Count
+.Keys
+.Values
+.Add()
+.ContainsKey()
+.ContainsValue()
+
+
+
+
+
+
+
 
 
 
