@@ -194,6 +194,133 @@ Dictionary Methods in C#:
 .ContainsKey()
 .ContainsValue()
 
+Access Modifiers:
+
+Modifier			Class	Assembly	World
+public				Yes	Yes		Yes
+protected			Yes	No		No
+internal (default for classes)	Yes	Yes		No
+protected internal		Yes	Yes		No
+private (default for class members)Yes	No		No
+
+In C#, an assembly refers to a grouping of classes and other resources that form a particular unit of an application.
+World-level is the level of the whole application and contains all of the packages and classes.
+Getter setter methods are also often called accessors.
+
+Getters Setters / Accessors:
+   private string name;
+
+   public string Name
+   {
+      get { return name; } // default is public?
+      internal set { name = value; } // only set by class or assembly
+   }
+
+Example of Setter Validation: // throw ArgumentException
+   public class Temperature 
+   {
+
+      private double fahrenheit;
+
+      public double Fahrenheit
+      {
+         get
+         {
+            return fahrenheit;
+         }
+
+        set
+        {
+            double absoluteZeroFahrenheit = -459.67;
+
+            if (value < absoluteZeroFahrenheit) 
+            {
+               throw new ArgumentException("Value is below absolute zero");
+            }
+
+            fahrenheit = value;
+         }
+      }
+   }
+
+Properties:
+A property in C# is a characteristic that users can set. Most often, properties will correspond directly to a private backing field, but they don’t have to. 
+   public double Celsius
+   {
+      get { return (Fahrenheit - 32) * 5.0 / 9.0; }
+      set { Fahrenheit = value * 9.0 / 5.0 + 32; }
+   }
+
+Auto-Implemented Properties:
+public string Name { get; set; } // shorthand if we don't need validation
+
+This is referred to as an auto-implemented property. When a property is auto-implemented, the compiler creates a private field that can only be accessed through the property’s get and set accessors.
+Note that in this example, the private field is name (lowercase) while the property is Name. Since C# identifiers are case-sensitive, these are two distinct members. name is referred to as a backing field, and it stores the value of the property.
+
+Constructor Overloading: // providing different constructors for different scenarios
+	
+   public class Student 
+   {
+
+      public string Name { get; set; }
+      public int StudentId { get; set; }
+      public int NumberOfCredits { get; set; }
+      public double Gpa { get; set; }
+
+      public Student(string name, int studentId, int numberOfCredits, double gpa) 
+      {
+         Name = name;
+         StudentId = studentId;
+         NumberOfCredits = numberOfCredits;
+         Gpa = gpa;
+      }
+
+      public Student(string name, int studentId) : this(name, studentId, 0, 0.0) {} // use this to call other constuctor, inheritance
+
+   }
+
+Instance Method with Constructor Overloading:
+	
+   public class Student 
+   {
+
+      private static int nextStudentId = 1;
+      public string Name { get; set; }
+      public int StudentId { get; set; }
+      public int NumberOfCredits { get; set; }
+      public double Gpa { get; set; }
+
+      public Student(string name, int studentId,
+            int numberOfCredits, double gpa)
+      {
+         Name = name;
+         StudentId = studentId;
+         NumberOfCredits = numberOfCredits;
+         Gpa = gpa;
+      }
+
+      public Student(string name, int studentId)
+        : this(name, studentId, 0, 0) {}
+
+      public Student(string name) 
+         : this(name, nextStudentId)
+      {
+         nextStudentId++;
+      }
+
+      public string StudentInfo() 
+      {
+         return (Name + " has a GPA of: " + Gpa);
+      }
+
+   }
+
+Single Responsibility Principle:
+The single responsibility principle states that every module or class should have responsibility over a single part of the functionality provided by the software, and that responsibility should be entirely encapsulated by the class.
+
+
+
+
 
 
 
