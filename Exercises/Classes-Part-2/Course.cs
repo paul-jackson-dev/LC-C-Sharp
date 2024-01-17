@@ -1,11 +1,28 @@
 ﻿using System;
 namespace Classes_Part_2
 {
-	public class Course
-	{
+    public class Course
+    {
         public string Topic { get; set; }
         public Teacher Instructor { get; set; }
         public List<Student> enrolledStudents { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Course course &&
+                   Topic == course.Topic &&
+                   EqualityComparer<Teacher>.Default.Equals(Instructor, course.Instructor);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Topic, Instructor);
+        }
+
+        public override string? ToString()
+        {
+            return base.ToString();
+        }
 
 
         // TODO: Add your custom 'ToString' method here. Make sure it returns a well-formatted string rather than

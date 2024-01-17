@@ -1,9 +1,9 @@
 ﻿using System;
 namespace TemperatureExceptions
 {
-	public class Temperature
-	{
-		private double fahrenheit;
+    public class Temperature
+    {
+        private double fahrenheit;
         public static double AbsoluteZeroFahrenheit { get; } = -459.67;
 
         public Temperature(double fahrenheit)
@@ -28,6 +28,6 @@ namespace TemperatureExceptions
                 fahrenheit = value;
             }
         }
-	}
+    }
 }
 

@@ -319,6 +319,88 @@ Single Responsibility Principle:
 The single responsibility principle states that every module or class should have responsibility over a single part of the functionality provided by the software, and that responsibility should be entirely encapsulated by the class.
 
 
+Readonly Fields:
+A readonly field is one that cannot be changed once it is initialized. This means slightly different things for value and reference types. We create readonly fields by declaring them with the readonly keyword.
+
+We cannot change the value of a readonly value field (readonly int, readonly double, etc.) after it is initialized.
+
+Similarly, we cannot assign a new object to a readonly reference field (readonly ClassName, for example) after initialization. However, because objects are reference types and not value types, we can change the values within the object itself.
+
+Const:
+There is no strong reason to make constants private, since restricting access would force us to re-declare the same values in different classes. We’ll generally make our constants public.
+
+We must declare and initialize a constant at the same time. If we do not declare and initialize the constant in the same statement, we cannot assign it a value later. The constant’s value remains empty
+
+Const vs Readonly:
+Const is a compile-time constant, while readonly is a runtime constant. Const values are implicitly static and limited to basic types, while readonly variables can be instance, static, or reference types. Const variables are stored in metadata and readonly variables are stored in the memory heap.
+
+Instance Methods:
+Instance methods define the behaviors that are unique or specialized to each class. Every object created from a class will carry a copy of these methods.
+Instance methods depend on the data stored in an individual object. If two objects call the same method, the results will vary when the objects contain different data.
+
+Static Methods:
+Just like static fields, static methods belong to the class as a whole, and not to any of the specific instances of the class. Thus, they are sometimes also called class methods. A static method is essentially the opposite of an instance method, since the two cases are mutually exclusive. Instance methods rely on each object’s specific data, while static methods must NOT rely on data from a specific object.
+
+It is technically allowed to call a static method using an instance of a class: myObject.SomeStaticMethod(). However, best practice recommends using the class name instead: ClassName.SomeStaticMethod(). This makes it clear to other coders that you are calling a static method.
+
+Equals():
+If we don’t provide our own Equals() method, the default option only considers two objects equal if they are the exact same object, which means they point to the same memory address. This is identical to the behavior we see when using the == operator: bono1 == bono2.
+The default Equals() method and the == operator test for identity, whereas we want to test for equality instead. We can do so by overriding the Equals() method.
+
+	
+public override boolean Equals(object toBeCompared) {
+
+   if (toBeCompared == this)
+   {
+      return true;
+   }
+
+   if (toBeCompared == null)
+   {
+      return false;
+   }
+
+   if (toBeCompared.GetType() != this.GetType())
+   {
+      return false;
+   }
+
+   Student s = toBeCompared as Student;
+   return s.StudentId == StudentId;
+}
+
+Reference check: If the two objects are the same, return true right away.
+Null check: If the argument is null, return false.
+Class check: Compare the classes of the two objects to ensure a safe cast. Return false if the classes are different.
+Cast: Convert the argument to the type of our class, so getters and other methods can be called.
+Custom comparison: Use custom logic to determine whether or not the two objects should be considered equal. This will usually be a comparison of class members.
+
+Auto-Generated .Equals():
+   public override bool Equals(object obj)
+   {
+      return obj is Course course && // With is, the compiler confirms that it is possible to cast obj to a variable course of type Course. If it is, the value of course is set to obj.
+         Topic == course.Topic &&
+         EqualityComparer<Teacher>.Default.Equals(Instructor, course.Instructor);
+   }
+
+Cast/Casting: //example
+Student s = toBeCompared as Student;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
