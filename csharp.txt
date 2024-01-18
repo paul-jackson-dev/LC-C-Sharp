@@ -387,6 +387,44 @@ Cast/Casting: //example
 Student s = toBeCompared as Student;
 
 
+MSTest:
+MSTest is a framework that provides the methods and assertions for writing and executing unit tests in C#.
+
+[TestClass]
+[TestMethod]
+[TestInitialize] // create new object that is persistent
+[TestCleanup]
+
+  [TestInitialize]
+   public void CreateCarObject()
+   {
+      test_car = new Car("Toyota", "Prius", 10, 50);
+   }
+
+Common Assert Methods:
+
+Assertion					Description
+AreEqual(expected, actual, optional_delta)	Asserts that two values, expected and actual, are equal to each other (optionally, within a given range of difference)
+IsFalse(condition)				Asserts that a given condition is false
+IsTrue(condition)				Asserts that a given condition is true
+IsNotNull(object)				Asserts that a given object is not null
+
+
+Example of expecting an exception:
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentOutOfRangeException))]
+    public void TestGasOverfillException()
+    {
+        test_car.AddGas(16);
+        Assert.Fail("Shouldn't get here, car cannot have more gas in tank than the size of the tank");
+    }
+}
+
+
+
+
+
+
 
 
 

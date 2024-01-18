@@ -2,8 +2,8 @@
 
 namespace Car
 {
-	public class Car
-	{
+    public class Car
+    {
         public string Make { get; set; }
         public string Model { get; set; }
         public int GasTankSize { get; set; }
@@ -40,6 +40,19 @@ namespace Car
             double gallonsUsed = milesAbleToTravel / MilesPerGallon;
             GasTankLevel -= gallonsUsed;
             Odometer += milesAbleToTravel;
+        }
+
+        public void AddGas(double gas)
+        {
+            if (gas > GasTankLevel)
+            {
+                throw new ArgumentOutOfRangeException("Can't exceed tank size");
+            }
+            else
+            {
+                GasTankLevel += gas;
+            }
+
         }
     }
 }
