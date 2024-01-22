@@ -420,6 +420,72 @@ Example of expecting an exception:
     }
 }
 
+Inheritance: (subtyping)
+Here’s a definition: inheritance is a mechanism within object-oriented programming that allows one class to be based on another class, thus receiving its properties and behaviors.
+
+// superclass, base class, or parent class
+public class Cat
+{
+   // ...code for the Cat class...
+}
+
+// subclass, derived class, or child class of Cat
+public class HouseCat : Cat // extends Cat
+{
+   // ...code for the HouseCat class...
+}
+
+base: // for constructors
+public Cat(double weight)
+{
+   Weight = weight;
+}
+
+public HouseCat(string name, double weight) : base(weight)
+{
+   Name = name;
+}
+
+override and virtual:
+When we override it, we should use override in the signature of the method in the subclass and virtual in the signature of the base class.
+
+// in Cat, base class
+public virtual string Noise()
+{
+   return "Meow!";
+}
+
+// in HouseCat, subclass
+public override string Noise()
+{
+   return "Hello, my name is " + Name + "!";
+}
+
+To call the base class method:
+it needs to be called from within the subclass.
+base.Noise()
+
+Inheriting from Abstraction: // abstract class
+Abstraction prevents a base class object from being created.
+
+public abstract class Cat
+{
+   // Cat class definition
+}
+
+abstract Methods:
+An abstract method is a method in an abstract class that does not have a body. In other words, it does not have any associated code, only a signature. It must also be marked abstract
+By creating this abstract method, we force any class that extends Cat to provide its own implementation of that behavior.
+
+Casting:
+When one class extends another, as HouseCat extends Cat, a field or local variable of the type of the base class may hold an object that is of the type of the child class.
+Cat suki = new HouseCat("Suki", 8);
+when we call methods on such an object, the compiler is smart enough to determine which method it should call. For example, the following call to Noise() will call the version defined in HouseCat:
+This only works for methods that are declared in the base class, however. If we have a HouseCat object stored in a Cat variable or field, then it is not allowed to call methods that are only part HouseCat.
+//here we cast Cat to HouseCat to access a subclass method that isn't defined in the base class.
+(suki as HouseCat).IsSatisfied();
+
+Storing objects of one type (e.g. HouseCat) in a variable or field of another compatible type (e.g. Cat) is an example of polymorphism. Polymorphism is another one of the pillars of OOP and we’ll have more to say about it in the next lesson.
 
 
 
