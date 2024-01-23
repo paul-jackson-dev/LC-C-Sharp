@@ -487,17 +487,134 @@ This only works for methods that are declared in the base class, however. If we 
 
 Storing objects of one type (e.g. HouseCat) in a variable or field of another compatible type (e.g. Cat) is an example of polymorphism. Polymorphism is another one of the pillars of OOP and we’ll have more to say about it in the next lesson.
 
+Polymorphism:
+Polymorphism is an object-oriented mechanism that allows for objects of different types to be used in the same way.
 
+Interfaces:
+An interface is similar to an abstract class, with some important differences. Interfaces allow us to create code organized by behavior, rather than static data. While some object-oriented languages encourage creating classes that behave like interfaces to improve software design, C# is a language that includes interfaces as a formal construction. Like abstract classes, interfaces cannot be instantiated and they have limitations on what kind of behavioral information they may contain. A C# interface may contain:
 
+Constants
+Method signatures
+Static methods
+Default methods
 
+	
+   public interface IFeedable
+   {
 
+      void Eat(); // method signature, no access modifier
 
+   }
 
+Static Methods in interfaces:
+A static method in an interface can contain code in the body. However, a static method cannot contain any references to instance properties in other classes. This means that our static methods should only deal with universal behaviors that are NOT dependent on instance properties.
 
+Default Methods in interfaces:
+A default method has a body and is a fully-formed method. It may be extended by classes implementing the interface.
 
+Extend a class and implement an interface:
+  public class HouseCat : Cat, IPetable
+   {
+      // ^^ Note that order matters here. The class being extended 
+      // must come before any interfaces being implemented
+   }
 
+Benefits of Using Interfaces:
+Once you get used to interfaces, you’ll begin to think more abstractly about which behaviors your code requires rather than which classes your code requires. This means you will start to “code to interfaces” (an OOP principle) instead of coding to classes, and your code will become more flexible and extensible.
 
+Here are a few benefits of using interfaces:
 
+You can only extend one class, but you may implement many interfaces.
+You can extend a class and implement an interface at the same time.
+By declaring variables and parameters as interface types, you make your code useful for a much wider variety of situations.
+When you declare properties and return types to be interface types, you decouple code using your classes from the actual class types you use. This means that you are free to change the specific implementation of your classes without affecting those using them.
+
+Interfaces and Abstract Classes:
+We mentioned previously that interfaces share some characteristics with abstract classes. Recall that an abstract class is one declared with the abstract keyword. You may not create an object from an abstract class and, like an interface, an abstract class is allowed to contain methods that only have signatures (that is, methods that don’t have implementation code).
+
+The main differences between interfaces and abstract classes are:
+
+You implement an interface, while you extend an abstract class. The net effect of this is that a class may implement interfaces while also extending a class. Note that while you can implement more than one interface, you can only extend one class.
+
+Abstract classes may contain non-constant fields, while interfaces can only contain constant fields.
+
+Abstract classes should be used to collect and specify behavior by related classes, while an interface should be used to specify related behaviors that may be common across unrelated classes
+
+Some of the most used interfaces:
+
+IComparer<T>
+Purpose: A class implements this interface to compare two objects of a given class. This is a parameterized interface, which means that when using it, you need to specify the class that it will be comparing. For example, IComparer<Job> would compare Job objects.
+
+Important Methods and Properties: Compare(T, T)
+
+IComparer.Compare Documentation
+
+This interface can be used to determine, given two objects of the given type, which one is greater than the other. It is also used by collections such as List to sort its contents with the Sort method.
+
+Using IComparer<T> is a two step process. You must first create a class that implements the interface. Then, provide a custom implementation of the Compare method.
+
+   public class JobComparer : IComparer<Job>
+   {
+      public int Compare(Job x, Job y)
+      {
+         // ^^ This Compare method is an implementation of IComparer.Compare
+         // Here, we write our own logic for comparing two job objects.
+         // For example, if we want to compare Job objects by name values, we'd write:
+         return string.Compare(x.Name, y.Name);
+         // ^^ Note, this Compare method is the built-in string method
+         // if we want to compare Jobs based on multiple fields, we can do so by expanding the custom logic
+         // in this ``IComparer.Compare`` implementation
+      }
+   }
+Compare(T, T) returns an integer which determines which of the two objects comes before (in other words, “is less than”) the other. If the returned value is less than zero, then the first parameter comes before the second. If the integer is zero, then they are considered the same. If the integer is greater than zero, then the second parameter comes before the first.
+
+You can think of the result of calling Compare(x, y) as being the value of subtracting, like x - y. If x is smaller than y, this value is negative. If x is larger than y, this value is positive.
+
+IEnumerable<T>
+Purpose: Enable iteration over a collection of objects using foreach.
+
+Important Methods and Properties: MoveNext(), Current
+
+IEnumerable Documentation
+
+This interface is implemented by the List<T> class, which we’ve been using throughout this course.
+IEnumerable<string> collection = new List<string>();
+
+   // add items to the collection
+
+   foreach (string item in collection) 
+   {
+      // do something with the item
+   }
+
+IList<T>
+Purpose: Enable access to objects in a collection by index.
+
+Important Methods and Properties: Add(T), Contains(T), Remove(T), Count
+
+IList Documentation
+
+This interface is also implemented by the List<T> class, which we’ve been using throughout this course. In fact, IList<T> extends IEnumerable<T>. An interface may extend another interface, in the same way that classes may extend each other.
+IList<string> collection = new List<string>();
+
+   // Add items to the collection
+
+   string firstItem = collection[0];
+
+IDictionary<TKey, TValue>
+Purpose: Represent a collection of key/value pairs.
+
+Important Methods and Properties: Add(TKey, TValue), Contains(T), Remove(T), Count, Keys, Values
+
+IDictionary Documentation
+
+This interface is implemented by the Dictionary<TKey, TValue> class, which we’ve been using throughout this course.
+IDictionary<string, string> collection = new Dictionary<string, string>();
+
+   // Add items to the collection
+
+   // Get item with key "hello"
+   string hello = collection["hello"];
 
 
 
