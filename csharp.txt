@@ -617,6 +617,91 @@ IDictionary<string, string> collection = new Dictionary<string, string>();
    string hello = collection["hello"];
 
 
+ASP.NET: (ASP.NET Core MVC)
+.NET version of MVC
+
+Controllers and Static Responses:
+public class HelloController : Controller
+   {
+
+      // class code here ...
+
+   }
+
+Conventional Routing:
+localhost:5001/<controller>/<action> // in Program.cs
+localhost:5001/home/index   // where Index calls Index()
+
+Attribute Routing: 
+Attribute Routing uses Action Methods.
+Action Methods are public methods in a controller class.
+attributes in C# lie somewhere between code and comments
+
+HTTP verb attributes
+[HttpGet]
+[HttpPost]
+
+IActionResult:
+IActionResult is an interface in the ASP.NET framework and often times the return type of action methods. When we specify the return type as IActionResult, the returned value dictates what the client will display after the action is complete. We can use IActionResult to get the client to display plain text or other data types. In a later section on views, we will use IActionResult to return HTML templates. We will only scratch the surface of what IActionResult can do so for now, let’s focus on Content. Content is a class that implements the IActionResult interface.
+
+class HelloController : Controller
+   {
+      [HttpGet] // HTTP verb attribute
+      [Route("/helloworld/")] // Routing attribute
+      public IActionResult Index() //IActionResult is an interface type
+      {
+         string html = "<h1>" + "Hello World!" + "<h1>";
+         return Content(html, "text/html"); // Content is a class that implements IActionResult
+      }
+   }
+
+Query Strings are URL Data:
+www.galaxyglossary.net?aKey=aValue&anotherKey=anotherValue&thirdKey=thirdValue  // key/value pairs
+localhost:5001/helloworld/welcome?name=Tillie
+
+   [HttpGet]
+   [Route("/helloworld/welcome/{name?}")] // query string name is optional ?
+   public IActionResult Welcome(string name = "World") // name has a default value in case a query string is not passed in
+   {
+      return Content("<h1>Welcome to my app, " + name + "!</h1>", "text/html");
+   }
+
+Path Variables:
+Path variables differ from query strings in that the data is not passed in as a key-value pair and that a path variable is a portion of the URL path.
+[Route("/helloworld/welcome/{name?}")] // also allows for path variables.
+example: localhost:5001/helloworld/welcome/Tillie
+This is because name is a route parameter
+A route parameter is a portion of the route (which encompasses both the path and the query string) that is passed from the route to the action method.
+
+Class-Level Attributes:
+	
+    [Route("/helloworld")]
+    public class HelloController : Controller
+    {
+        // action methods here
+    }
+
+One Method, Two Request Types:
+allows for Get Requests at,
+localhost:5001/helloworld/welcome // returns default name
+localhost:5001/helloworld/welcome?name=Tillie // accepts query string for name
+localhost:5001/helloworld/welcome/Tille // uses path variable for name
+
+and Post request at, 
+localhost:5001/helloworld/welcome
+
+
+   [HttpGet("welcome/{name?}")]
+   [HttpPost("welcome")]
+   public IActionResult Welcome(string name = "World")
+   {
+      return Content("<h1>Welcome to my app, " + name + "!</h1>", "text/html");
+   }
+
+
+
+
+
 
 
 
