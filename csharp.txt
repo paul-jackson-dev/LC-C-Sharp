@@ -698,6 +698,35 @@ localhost:5001/helloworld/welcome
       return Content("<h1>Welcome to my app, " + name + "!</h1>", "text/html");
    }
 
+Exceptions:
+System.Exception
+Exceptions in C# are objects derived from the System.Exception class. 
+public Temperature(double fahrenheit)
+{
+   try
+   {
+      Fahrenheit = fahrenheit;
+   }
+   catch(ArgumentOutOfRangeException e)
+   {
+      Fahrenheit = -459.67;
+   }
+   catch() // multiple catches are allowed, exception swallowing
+   {
+      Fahrenheit = -459.67;
+   }
+   finally
+   {
+      Console.WriteLine("Fahrenheit cannot be less than -459.67.");
+   }
+}
+
+Common Exception Types:
+ ArgumentOutOfRangeException
+ ArgumentNullException
+ IndexOutOfRangeException
+ InvalidOperationException
+ NullReferenceException
 
 
 
