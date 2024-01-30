@@ -1,0 +1,10 @@
+﻿<h1>Hi! @ViewBag.name in @ViewBag.language </ h1 >
+
+@if (ViewBag.person == null || ViewBag.person == "")
+{
+    <h1>Welcome, "person"!</h1>
+}
+else
+{
+    <h1>Welcome, @ViewBag.person!</h1>
+}

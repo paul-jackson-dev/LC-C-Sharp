@@ -1,0 +1,34 @@
+﻿
+
+<h1>Coding Events</h1>
+
+<p>
+    <a asp-controller="Events" asp-action="Add">add an event</a>
+</p>
+
+
+@if (ViewBag.events.Count == 0)
+{
+    <p>No fun here, please add an event.</p>
+}
+
+<table>
+    <tr>
+        <th>
+            Name
+        </th>
+        <th>
+            Description
+        </th>
+    </tr>
+    @foreach (KeyValuePair<string, string> singleEvent in ViewBag.events)
+    {
+        <tr>
+            <td>@singleEvent.Key</td>
+            <td>@singleEvent.Value</td>
+        </tr>
+    }
+</table>
+
+@*<a href="/event/add">add an event</a>*@
+ 

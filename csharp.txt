@@ -732,6 +732,124 @@ Common Exception Types:
 Razor Views: (templating language)
 Razor is a templating syntax included in the application framework for our MVC project. It allows us to write C# code directly into an HTML tree.
 
+Out of the box, your MVC project contains several Razor templates within the Views directory. The sub-directory Home, found inside of Views, contains the Razor templates returned from the HomeController action methods. Just as an action method’s name will map to a route with the same name, an action method’s name can also correspond to a Razor template’s name
+
+The Index() method inside of HomeController returns the Index.cshtml template found inside of Views/Home.
+
+You can override the default behavior of the View() method, you can pass in a parameter which is the name of the template you want to render. For example, if we want an action method named Form() to return a Razor template named WelcomeForm.cshtml, we have Form() return View("WelcomeForm");
+
+We are going to name the Views after their corresponding action methods for the MVC projects in this course. Index()
+
+
+_Layout.cshtml:
+This file adds styling to pages automatically.
+We can change it or remove it from our pages.
+//inside the Views/Hello/Index.cshtml
+@{
+   Layout = null;
+}
+
+Passing Data to a Template:
+ViewBag is an object that passes data into a template.
+You can think of ViewBag as like an empty container object who exists for the purpose of carrying variables from the controller into the view.
+	
+  public IActionResult ActionMethod()
+  {
+     // method code here
+
+     ViewBag.property = Data;
+     return View();
+  }
+
+Accessing Data in a Template:
+<p>@ViewBag.vegetable</p>
+<h1>Welcome, @ViewBag.person!</h1>
+
+Iterating in a Template:
+<ol>
+   @foreach (string coffeeType in ViewBag.coffeeOptions)
+   {
+      <li>@coffeeType</li>
+   }
+</ol>
+
+We can use var for implied typing for custom types/classes:
+We can also import custom classes at the top of the template with a using statement.
+	
+@foreach (var coffeeShop in ViewBag.coffeeShops)
+{
+   @*Each shop name*@
+   <p>@coffeeShop.Name</p>
+   <ul>
+      @foreach(string coffeeType in coffeeShop.CoffeeOptions)
+      {
+         @*Each coffee type available*@
+         <li>@coffeeType</li>
+      }
+   </ul>
+}
+
+Conditionals in a template:
+@if (ViewBag.userSelection == "Instant")
+{
+   <p>Are you sure about that?</p>
+}
+else if (ViewBag.userSelection == "French Roast")
+{
+   <p>Oooh la la!</p>
+}
+else
+{
+   <p>Thanks for your order</p>
+}
+
+Razor Forms: //start coding events
+<form method="post">
+   <input name="name" type="text" />
+   <input type="submit" value="Add Event" />
+</form>
+
+Usage of redirect after form data is caught:
+[HttpPost]
+[Route("/Events/Add")]
+public IActionResult NewEvent (string name)
+{
+   // Method code ...
+   return Redirect("/Events");
+}
+
+Anchor Tags: // for linking
+<a asp-controller="ControllerName" asp-action="ViewName">Text Here</a>
+
+Marking a Partial View: // fragments
+_LinkListPartial.cshtml
+
+<a href = "https://www.launchcode.org">LaunchCode</a> <br/>
+<a href = "https://www.lego.com">Play Well</a> <br/>
+<a href = "https://www.webelements.com">Other Building Blocks</a>
+
+<!-- template code -->
+
+<partial name="/Views/Shared/_LinkListPartial.cshtml" />
+
+<!-- more template code -->
+
+
+wwwroot is the default location for static files
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
