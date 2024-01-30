@@ -2,15 +2,16 @@
 
 namespace HelloASPDotNET.Controllers
 {
-    [Route("/hello")]
+    //[Route("")]
     public class HelloController : Controller
     {
         // GET: /hello/
         [HttpGet]
+        [Route("/hello")]
         public IActionResult Index()
         {
 
-            string html = "<form method='post' action = 'hello/welcome'>" +
+            string html = "<form method='post' action = 'hello'>" +
                 "<input type='text' name='name' />" +
                 "<select name='language'><option value='english' selected>English</option>" +
                 "<option value='spanish'>Spanish</spanish>" +
@@ -33,8 +34,9 @@ namespace HelloASPDotNET.Controllers
 
         // POST: /<controller>/welcome
         //GET : /<controller>/welcome/{name}
-        [HttpPost("welcome")] // responds to post request at /hello/welcome
-        [HttpGet("welcome/{name?}")] // responds to get request at /hello/welcome/{name}
+        [HttpPost] // responds to post request at /hello
+        [Route("/hello")]
+        //[HttpGet("welcome/{name?}")] // responds to get request at /hello/welcome/{name}
         public IActionResult WelcomePost(string name = "no name given", string language = "english")
         {
             language = char.ToUpper(language[0]) + language.Substring(1); // convert first letter to Uppercase

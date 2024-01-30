@@ -729,7 +729,8 @@ Common Exception Types:
  NullReferenceException
 
 
-
+Razor Views: (templating language)
+Razor is a templating syntax included in the application framework for our MVC project. It allows us to write C# code directly into an HTML tree.
 
 
 
