@@ -837,6 +837,50 @@ _LinkListPartial.cshtml
 
 wwwroot is the default location for static files
 
+Models and Model Binding:
+A model represents the logic for accessing and storing the data used in an application. // the business logic
+example model: //type
+   namespace CodingEventsDemo.Models
+   {
+      public class Event
+      {
+         public string Name { get; set; }
+         public string Description { get; set; }
+
+         public Event(string name, string description)
+         {
+            Name = name;
+            Description = description;
+         }
+
+         public override string ToString()
+         {
+            return Name;
+         }
+      }
+   }
+
+Auto-Implement properties:
+Here’s a shorthand to create auto-implementing properties. In a class, type the word “prop” followed by hitting the Tab key twice. This swiftly supplies the property’s scaffolding:
+public string Description { get; set; }
+
+Model Binding:
+Model Binding requires an empty constructor.
+
+For Model Binding to work form field names must match a model field name.
+public IActionResult NewEvent(Event newEvent)
+
+We can force fields to binding using [FromForm]	
+   [FromForm(Name="desc")]	
+   public string Description { get; set; }
+
+Route Id:
+/event/edit/1
+<td><a asp-controller="Event" asp-action="Edit" asp-route-id="@evt.Id">Edit Event</a></td>
+
+
+
+
 
 
 

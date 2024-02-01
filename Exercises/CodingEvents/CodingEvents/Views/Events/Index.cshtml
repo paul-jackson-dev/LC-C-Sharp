@@ -15,17 +15,23 @@
 <table>
     <tr>
         <th>
+            Id
+        </th>
+        <th>
             Name
         </th>
         <th>
             Description
         </th>
     </tr>
-    @foreach (KeyValuePair<string, string> singleEvent in ViewBag.events)
+    @foreach (Event singleEvent in ViewBag.events)
     {
         <tr>
-            <td>@singleEvent.Key</td>
-            <td>@singleEvent.Value</td>
+            <td>
+                <a href="/event/edit/@singleEvent.Id">@singleEvent.Id</a>
+            </td>
+            <td>@singleEvent.Name</td>
+            <td>@singleEvent.Description</td>
         </tr>
     }
 </table>
