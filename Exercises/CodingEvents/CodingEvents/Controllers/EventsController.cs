@@ -1,5 +1,6 @@
 ﻿using CodingEvents.Data;
 using CodingEvents.Models;
+using CodingEvents.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodingEvents.Controllers
@@ -16,25 +17,41 @@ namespace CodingEvents.Controllers
         public IActionResult Index()
         {
             //List<string> Events = new List<string>() { "Tom's Event", "Danny's Event", "Mark's Event" };
-            ViewBag.events = EventData.GetAll();
+            //ViewBag.events = EventData.GetAll();
+            List<Event> events = new List<Event>(EventData.GetAll());
 
-            return View();
+            return View(events); // when sending a list directly to the view, we need to import the event model and  @model List<Event> for strong typing
         }
 
         [HttpGet]
         [Route("add")]
         public IActionResult Add()
         {
-            return View();
+            AddEventViewModel viewModel = new AddEventViewModel();
+            return View(viewModel); // return viewmodel to page for rending
         }
 
         [HttpPost]
         [Route("add")]
-        public IActionResult NewEvent(Event freshEvent)
+        public IActionResult Add(AddEventViewModel addEventViewModel)
         {
-            EventData.Add(freshEvent);
+            if (ModelState.IsValid) // if Model is valid and there are no error messages.
+            {
+                //Event newEvent = new Event(addEventViewModel.Name, addEventViewModel.Description);
+                Event freshEvent = new Event
+                {
+                    Name = addEventViewModel.Name,
+                    Description = addEventViewModel.Description,
+                    Email = addEventViewModel.Email,
+                    Location = addEventViewModel.Location
+                };
 
-            return Redirect("/event");
+
+                EventData.Add(freshEvent);
+
+                return Redirect("/event");
+            }
+            return View(addEventViewModel); // there are errors, return the addEventViewModel
         }
 
         [HttpGet]

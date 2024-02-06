@@ -1,0 +1,37 @@
+﻿@using SpaDay6.ViewModels
+@model AddUserViewModel
+
+<h1>Sign Up Form</h1>
+
+@if (ViewBag.error != null)
+{
+    <p>@ViewBag.error</p>
+}
+
+<form method="post" action="/user">
+    <div class="form-group">
+        <label asp-for="Username">Username</label>
+        <input asp-for="Username" />
+        <span asp-validation-for="Username"></span>
+    </div>
+    <br>
+    Email:
+    <br>
+    @if (ViewBag.error == null)
+    {
+        <input type="email" name="email" />
+    }
+    else
+    {
+        <input type="email" name="email" value="@ViewBag.eMail" />
+    }
+    <br>
+    Password:
+    <input type="password" name="password" />
+    <br>
+    Confirm Password:
+    <br>
+    <input type="password" name="verify" />
+    <br>
+    <input type='submit' value='Submit'>
+</form>
