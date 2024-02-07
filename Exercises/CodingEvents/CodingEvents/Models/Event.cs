@@ -7,6 +7,7 @@ namespace CodingEvents.Models
         public string? Description { get; set; }
         public string? Email { get; set; }
         public string? Location { get; set; }
+        public EventType? Type { get; set; }
         public int Id { get; }
         private static int nextId = 1;
 
@@ -23,7 +24,7 @@ namespace CodingEvents.Models
             Email = email;
             Location = location;
             Id = nextId;
-            nextId++;        
+            nextId++;
         }
 
         public override string? ToString()

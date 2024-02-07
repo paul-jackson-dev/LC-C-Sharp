@@ -43,7 +43,8 @@ namespace CodingEvents.Controllers
                     Name = addEventViewModel.Name,
                     Description = addEventViewModel.Description,
                     Email = addEventViewModel.Email,
-                    Location = addEventViewModel.Location
+                    Location = addEventViewModel.Location,
+                    Type = addEventViewModel.Type
                 };
 
 

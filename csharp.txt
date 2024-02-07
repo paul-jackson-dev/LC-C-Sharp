@@ -985,6 +985,55 @@ full form: //with validation and error messages
 To pass an object in while specifying the view.
 return View("ViewName", objectName);
 
+Enums:
+Good for forcing values to reduce variance and errors in data.
+
+	
+   enum Day
+   {
+      Sunday,
+      Monday,
+      Tuesday,
+      Wednesday,
+      Thursday,
+      Friday,
+      Saturday
+   }
+
+same thing.
+
+   public class DayConst
+   {
+      public const int Sunday = 0;
+      public const int Monday = 1;
+      public const int Tuesday = 2;
+      public const int Wednesday = 3;
+      public const int Thursday = 4;
+      public const int Friday = 5;
+      public const int Saturday = 6;
+   }
+
+Add an enum to a SelectListItem for transfer into the view.
+   public List<SelectListItem> EventTypes { get; set; } = new List<SelectListItem>
+   {
+      new SelectListItem(EventType.Conference.ToString(), ((int)EventType.Conference).ToString()),
+      new SelectListItem(EventType.Meetup.ToString(), ((int)EventType.Meetup).ToString()),
+      new SelectListItem(EventType.Social.ToString(), ((int)EventType.Social).ToString()),
+      new SelectListItem(EventType.Workshop.ToString(), ((int)EventType.Workshop).ToString())
+   };
+
+SelectListItem is an ASP.NET-provided class that represents each <option> element in a <select> element. The SelectListItem constructor requires a Text and Value property assignment. The Text property sets the displayed text in the <option> tag. This is created by getting each EventType and casting it to a string type. The Value property sets the value attribute on the <option> tag. This is created by getting each EventType, casting it to its implicit int value, and then casting that to a string type.
+
+This list only exists in AddEventViewModel because we need it only for the purposes of displaying all of the options. We do not need a list of the different event types in our Event model. We just need the type of one event. This is another great reason to use a ViewModel!
+
+asp-items: // to display list of options in select element
+    <div class="form-group">
+        <label asp-for="Type">Event Type</label>
+        <select asp-for="Type" asp-items="Model.EventTypes"></select>
+    </div>
+
+
+
 
 
 
