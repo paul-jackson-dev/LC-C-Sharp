@@ -1,7 +1,15 @@
+using CodingEvents.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// set up database and add DbContext services
+var connectionString = "server=localhost;user=username;password=password;database=coding-events-c-sharp";
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 33));
+builder.Services.AddDbContext<EventDbContext>(dbContextOptions => dbContextOptions.UseMySql(connectionString, serverVersion)); // add this service to connect to our SQL server to update everytime we add to DbContext
 
 var app = builder.Build();
 

@@ -11,6 +11,12 @@ namespace CodingEvents.Controllers
         //private static List<string> Events = new List<string>(); //{ "Tom's Event", "Danny's Event", "Mark's Event" };
         //private static Dictionary<string, string> Events = new Dictionary<string, string>();
         //static private List<Event> Events = new List<Event>();
+        private EventDbContext context;
+
+        public EventsController(EventDbContext dbcontext) // use contructor injection to populate context with our Entity
+        {
+            context = dbcontext;
+        }
 
         [HttpGet]
         [Route("")]
@@ -18,7 +24,8 @@ namespace CodingEvents.Controllers
         {
             //List<string> Events = new List<string>() { "Tom's Event", "Danny's Event", "Mark's Event" };
             //ViewBag.events = EventData.GetAll();
-            List<Event> events = new List<Event>(EventData.GetAll());
+            //List<Event> events = new List<Event>(EventData.GetAll());
+            List<Event> events = context.Events.ToList();
 
             return View(events); // when sending a list directly to the view, we need to import the event model and  @model List<Event> for strong typing
         }
@@ -48,7 +55,9 @@ namespace CodingEvents.Controllers
                 };
 
 
-                EventData.Add(freshEvent);
+                //EventData.Add(freshEvent);
+                context.Events.Add(freshEvent);
+                context.SaveChanges();
 
                 return Redirect("/event");
             }
@@ -59,7 +68,8 @@ namespace CodingEvents.Controllers
         [Route("delete")]
         public IActionResult Delete()
         {
-            ViewBag.events = EventData.GetAll();
+            //ViewBag.events = EventData.GetAll();
+            ViewBag.events = context.Events.ToList();
             return View();
         }
 
@@ -69,7 +79,13 @@ namespace CodingEvents.Controllers
         {
             foreach (int i in eventIds)
             {
-                EventData.Remove(i);
+                //EventData.Remove(i);
+                Event? anEvent = context.Events.Find(i);
+                if (anEvent != null)
+                {
+                    context.Events.Remove(anEvent);
+                    context.SaveChanges();
+                }
             }
 
             return Redirect("/event");
@@ -79,9 +95,13 @@ namespace CodingEvents.Controllers
         [Route("edit/{eventId}")]
         public IActionResult Edit(int eventId)
         {
-            Event singleEvent = EventData.GetById(eventId);
-            ViewBag.title = "Edit Event " + singleEvent.Name + "(id=" + singleEvent.Id.ToString() + ")";
-            ViewBag.singleEvent = singleEvent;
+            //Event singleEvent = EventData.GetById(eventId);
+            Event? singleEvent = context.Events.Find(eventId);
+            if (singleEvent != null)
+            {
+                ViewBag.title = "Edit Event " + singleEvent.Name + "(id=" + singleEvent.Id.ToString() + ")";
+                ViewBag.singleEvent = singleEvent;
+            }
 
             return View();
         }
@@ -90,10 +110,15 @@ namespace CodingEvents.Controllers
         [Route("edit")]
         public IActionResult EditProcessing(int eventId, string name, string description)
         {
-            Event editEvent = EventData.GetById(eventId);
-            editEvent.Name = name;
-            editEvent.Description = description;
-            //EventData.Save(editEvent); // this would be needed if we were connected to a db, but in this case, we are just updating the object itself
+            //Event editEvent = EventData.GetById(eventId);
+            Event? editEvent = context.Events.Find(eventId);
+            if (editEvent != null)
+            {
+                editEvent.Name = name;
+                editEvent.Description = description;
+                context.SaveChanges();
+                //EventData.Save(editEvent); // this would be needed if we were connected to a db, but in this case, we are just updating the object itself
+            }
             return Redirect("/event");
         }
     }
