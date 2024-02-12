@@ -1032,11 +1032,94 @@ asp-items: // to display list of options in select element
         <select asp-for="Type" asp-items="Model.EventTypes"></select>
     </div>
 
+Object-Relational Mapping:
+Object-Relational Mapping or ORM is a technique for converting data between C# objects and relational databases. ORM converts data between two incompatible type systems (C# and MySQL), such that each model class becomes a table in our database and each instance a row of the table.
+
+ORM in ASP.NET: DbContext
+One of the most widely used object-relational mappers available for C# and ASP.NET Core is Entity Framework Core. This framework makes use of data layers. When we learned about models, we learned that data layers add abstraction between models and the data we want to store. With Entity FrameworkCore, data layers take the form of classes that extend DbContext.
+
+To set up the Entity Framework Core. // install
+cd to project folder, run
+dotnet ef
+if nothing comes up,
+dotnet tool install -g dotnet-ef
+
+To connect a db in csharp:
+in Program.cs
+   var connectionString = "server=localhost;user=username;password=password;database=database";
+   var serverVersion = new MySqlServerVersion(new Version(#, #, #));
+
+To install Db and associated packages: // make sure all versions match. ie 8 might not work with 7
+https://education.launchcode.org/csharp-web-dev-curriculum/orm-part-1/reading/connecting-to-db/index.html
+
+Pomelo.EntityFrameworkCore.MySql. This dependency provides code that is able to connect to a MySQL database from within an ASP.NET Core application using EF.
+Microsoft.EntityFrameworkCore.Relational. This is a mapping framework that automates access and storage of data in your project’s database.
+Microsoft.EntityFrameworkCore.Design. This helps manage data migrations and the design-time logic.
 
 
+Create DbContext:
+namespace CodingEvents.Data
+{
+    public class EventDbContext : DbContext
+    {
+        public DbSet<Event> Events { get; set; } // DbContext is typically paired with DbSet which represents the collection of entities that we want to query through
+                                          // this allows us to query our Event objects
+
+        public EventDbContext(DbContextOptions<EventDbContext> options) : base(options) // the constructor extends DbContextOptions which helps configure the data store
+        {                                                                               // pass DbContextOptions of EventDbContext types to DbContext //allows us to inherit from DbContextOptions
+        }
+    }
+}
+
+Register a Data Store, DbContext: 
+create a service in Program.cs. Services start everytime Program is run.
+var connectionString = "server=localhost;user=username;password=password;database=coding-events-c-sharp";
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 33));
+
+builder.Services.AddDbContext<EventDbContext>(dbContextOptions => dbContextOptions.UseMySql(connectionString, serverVersion)); // add this service to connect to our SQL server to update everytime we add to DbContext
+
+The Entity Framework sets the ID for us
+
+Now we need to set up our Migrations:
+Our application is now completely configured to store Event objects in our MySQL database. However, if you look at the coding-events database, you’ll notice that it has no table in which to store such data. To create such a table, we need to create and run a database migration. A database migration (or migration, for short) is an update to a database made in order to reflect changes in an application’s model. Every time we change our application’s model by adding or removing a new persistent class, or by modifying a persistent class, we will need to create and run a migration.
+
+Add a migration:
+// install dotnet ef // dotnet tool install -g dotnet-ef
+dotnet ef migrations add Init
+dotnet ef database update // sends the new migration to the database and creates the tables
 
 
+Use constructor injection to access the database in the controller or other classes:
 
+        private EventDbContext context;
+
+        public EventsController(EventDbContext dbcontext) // use contructor injection to populate context with our Entity
+        {
+            context = dbcontext;
+        }
+
+Access the entire db:
+List<Event> events = context.Events.ToList();
+
+Add to db:
+context.Events.Add(freshEvent);
+context.SaveChanges(); // must save
+
+Remove from db:
+                Event? anEvent = context.Events.Find(i); //look up event with an Id and see if it's there
+                if (anEvent != null)
+                {
+                    context.Events.Remove(anEvent);
+                    context.SaveChanges();
+                }
+
+Edit an event:
+            Event? editEvent = context.Events.Find(eventId);
+            if (editEvent != null)
+            {
+                editEvent.Name = name;
+                editEvent.Description = description;
+                context.SaveChanges();
 
 
 
