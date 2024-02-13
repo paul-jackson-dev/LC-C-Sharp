@@ -2,6 +2,7 @@
 using CodingEvents.Models;
 using CodingEvents.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CodingEvents.Controllers
 {
@@ -25,7 +26,8 @@ namespace CodingEvents.Controllers
             //List<string> Events = new List<string>() { "Tom's Event", "Danny's Event", "Mark's Event" };
             //ViewBag.events = EventData.GetAll();
             //List<Event> events = new List<Event>(EventData.GetAll());
-            List<Event> events = context.Events.ToList();
+            //List<Event> events = context.Events.ToList();
+            List<Event> events = context.Events.Include(e => e.Category).ToList(); // eager loading, performs join operation adding Category
 
             return View(events); // when sending a list directly to the view, we need to import the event model and  @model List<Event> for strong typing
         }
@@ -34,7 +36,8 @@ namespace CodingEvents.Controllers
         [Route("add")]
         public IActionResult Add()
         {
-            AddEventViewModel viewModel = new AddEventViewModel();
+            List<EventCategory> categories = context.EventCategories.ToList(); // get all categories
+            AddEventViewModel viewModel = new AddEventViewModel(categories); // pass them to the viewmodel so they can be rendered into a select item list
             return View(viewModel); // return viewmodel to page for rending
         }
 
@@ -44,6 +47,7 @@ namespace CodingEvents.Controllers
         {
             if (ModelState.IsValid) // if Model is valid and there are no error messages.
             {
+                EventCategory? aCategory = context.EventCategories.Find(addEventViewModel.CategoryId); // get the Category using the Id
                 //Event newEvent = new Event(addEventViewModel.Name, addEventViewModel.Description);
                 Event freshEvent = new Event
                 {
@@ -51,7 +55,8 @@ namespace CodingEvents.Controllers
                     Description = addEventViewModel.Description,
                     Email = addEventViewModel.Email,
                     Location = addEventViewModel.Location,
-                    Type = addEventViewModel.Type
+                    //Type = addEventViewModel.Type
+                    Category = aCategory
                 };
 
 

@@ -9,7 +9,9 @@ namespace CodingEvents.Models
         public string? Description { get; set; }
         public string? Email { get; set; }
         public string? Location { get; set; }
-        public EventType? Type { get; set; }
+        //public EventType? Type { get; set; }
+        public EventCategory Category { get; set; }
+        public int CategoryId { get; set; } // functions as a foreign key for Category
         //private static int nextId = 1;
 
         public Event()

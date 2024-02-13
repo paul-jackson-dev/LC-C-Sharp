@@ -1121,9 +1121,43 @@ Edit an event:
                 editEvent.Description = description;
                 context.SaveChanges();
 
+A Primer on Lambda Expressions:
+A lambda expression is an inline function defined using the symbol =>
+argument => return expression
 
+Select Example of a Lambda: (transforms/doubles the numbers in the return expression)
+    int[] nums = {1, 2, 3, 4};
+    var doubledNums = nums.Select(x => 2*x);
+    Console.WriteLine(string.Join(" ", doubledNums));
+    // output 2 4 6 8	
 
+Where Example:
+    int[] nums = {1, 2, 3, 4};
+    var evens = nums.Where(x => (x % 2 == 0));
+    Console.WriteLine(string.Join(" ", evens));
+    // output 2 4
 
+Setting up One-To-Many Relationship:
+// in Event
+public EventCategory Category { get; set; }
+public int CategoryId { get; set; } // acts as foreign key
+The CategoryId property functions as a foreign key. EF will create a CategoryId column in the Event table. The value of this column for a given row will determine which row in the Category table is related to the given event. Our code is now set up so that each Event will know about its EventCategory object, and that relationship persists.
+It is very important that the ID field corresponding to the Category property is named CategoryId. This naming convention lets EF know that it should set Category to be the object with the Id value the same as CategoryId.
+
+Defining the Inverse Relationship:
+//in EventCategory
+public List<Event> Events { get; set; }
+The new property on Event is a single EventCategory reference, while the new property on EventCategory is a collection of Event objects. This is due to the one-to-many nature of the relationship. Each Event can have only one EventCategory, but an EventCategory may be related to multiple Event objects.
+
+Lazy Loading: (default in EF)
+lazy loading only loads the object requested and not other reference objects stored in other tables.
+While lazy loading is not what we want now, it can be a useful strategy in a lot of cases. Suppose your application wants to display a list of all users, where each User has a UserDetails property that stores info like profile image, email, etc.
+If all we need is a list of users, loading all of the additional data in UserProfile is unnecessary and will slow down the application. Lazy loading minimizes the data returned to optimize performance and reduce queries.
+
+Eager Loading:
+The solution is to use eager loading. Eager loading is a technique that allows us to specify that data from other tables/objects be loaded when the querying a specific table/object. 
+List<Event> events = context.Events.Include(e => e.Category).ToList(); // in the controller
+The Include method takes a lambda expression which specifies the property of each Event object that should be included in the query results. The effect of this additional method is that a JOIN query is performed between the Event and EventCategory tables, with Event.CategoryId being joined on EventCategory.Id.
 
 
 

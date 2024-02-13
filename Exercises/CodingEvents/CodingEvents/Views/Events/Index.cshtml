@@ -31,7 +31,7 @@
             Email
         </th>
         <th>
-            Type
+            Category
         </th>
     </tr>
     @foreach (Event singleEvent in Model)
@@ -44,7 +44,7 @@
             <td>@singleEvent.Description</td>
             <td>@singleEvent.Location</td>
             <td>@singleEvent.Email</td>
-            <td>@singleEvent.Type</td>
+            <td>@singleEvent.Category.Name</td>
         </tr>
     }
 </table>

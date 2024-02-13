@@ -21,18 +21,35 @@ namespace CodingEvents.ViewModels
         [StringLength(100, MinimumLength = 3, ErrorMessage = "An event location should be 3 - 50 characters")]
         public string? Location { get; set; }
 
-        public EventType Type { get; set; }
+        //public EventType Type { get; set; }
+        [Required(ErrorMessage = "Category is required")]
+        public int CategoryId { get; set; }
+        public List<SelectListItem>? Categories { get; set; }
 
 
-        public List<SelectListItem> EventTypes { get; set; } = new List<SelectListItem> // for enum
-           {
-              new SelectListItem(EventType.Party.ToString(), ((int)EventType.Party).ToString()),
-              new SelectListItem(EventType.Conference.ToString(), ((int)EventType.Conference).ToString()),
-              new SelectListItem(EventType.Meetup.ToString(), ((int)EventType.Meetup).ToString()),
-              new SelectListItem(EventType.Social.ToString(), ((int)EventType.Social).ToString()),
-              new SelectListItem(EventType.Workshop.ToString(), ((int)EventType.Workshop).ToString())
-           };
+        //public List<SelectListItem> EventTypes { get; set; } = new List<SelectListItem> // for enum
+        //   {
+        //      new SelectListItem(EventType.Party.ToString(), ((int)EventType.Party).ToString()),
+        //      new SelectListItem(EventType.Conference.ToString(), ((int)EventType.Conference).ToString()),
+        //      new SelectListItem(EventType.Meetup.ToString(), ((int)EventType.Meetup).ToString()),
+        //      new SelectListItem(EventType.Social.ToString(), ((int)EventType.Social).ToString()),
+        //      new SelectListItem(EventType.Workshop.ToString(), ((int)EventType.Workshop).ToString())
+        //   };
 
-        // no contructor required for ViewModels, similar to DTO
+        public AddEventViewModel(List<EventCategory> categories)
+        {
+            Categories = new List<SelectListItem>();
+            foreach (EventCategory category in categories)
+            {
+                Categories.Add(new SelectListItem
+                {
+                    Value = category.Id.ToString(),
+                    Text = category.Name
+                }
+                    );
+            }
+        }
+        public AddEventViewModel() { } // no arg constructor for model binding
+
     }
 }
