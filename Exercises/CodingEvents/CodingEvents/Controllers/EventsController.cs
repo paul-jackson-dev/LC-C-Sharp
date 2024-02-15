@@ -126,5 +126,18 @@ namespace CodingEvents.Controllers
             }
             return Redirect("/event");
         }
+
+        [HttpGet]
+        [Route("detail/{id}")] //event/detail/5
+        public IActionResult Detail(int id) // this needs to be id because of app.MapControllerRoute in Program.cs pattern: "{controller=Home}/{action=Index}/{id?}");
+        {
+            Event anEvent = context.Events
+                .Include(e => e.Category) // include Category one to many
+                .Include(e => e.Tags) // include tags many to many
+                .Single(e => e.Id == id); // return a single entry where e.Id == id // can't use Find() becase we are eager loading to include Category
+
+            EventDetailViewModel viewModel = new EventDetailViewModel(anEvent);
+            return View("detail", viewModel);
+        }
     }
 }

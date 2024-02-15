@@ -10,8 +10,19 @@ namespace CodingEvents.Data
 
         public DbSet<EventCategory> EventCategories { get; set; }
 
+        public DbSet<Tag> Tags { get; set; }
+
         public EventDbContext(DbContextOptions<EventDbContext> options) : base(options) // the constructor extends DbContextOptions which helps configure the data store
         {                                                                               // pass DbContextOptions of EventDbContext types to DbContext //allows us to inherit from DbContextOptions
+        }
+
+        // set up many to many relationship
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Event>()
+                  .HasMany(e => e.Tags)
+                  .WithMany(e => e.Events)
+                  .UsingEntity(j => j.ToTable("EventTags"));
         }
     }
 }

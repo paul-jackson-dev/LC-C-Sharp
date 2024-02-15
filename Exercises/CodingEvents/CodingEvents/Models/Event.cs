@@ -10,9 +10,10 @@ namespace CodingEvents.Models
         public string? Email { get; set; }
         public string? Location { get; set; }
         //public EventType? Type { get; set; }
-        public EventCategory Category { get; set; }
+        public EventCategory Category { get; set; } // One to Many
         public int CategoryId { get; set; } // functions as a foreign key for Category, auto populated?
         //private static int nextId = 1;
+        public ICollection<Tag> Tags { get; set; } // Many to Many
 
         public Event()
         { // empty constructor required for model binding
