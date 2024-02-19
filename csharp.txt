@@ -1141,6 +1141,9 @@ Setting up One-To-Many Relationship:
 // in Event
 public EventCategory Category { get; set; }
 public int CategoryId { get; set; } // acts as foreign key
+One-to-many relationships are established at the database level by the use of a foreign key column on one side of the relationship. Our Events table has a foreign key column: CategoryId.
+For each Events row, the column CategoryId contains the Id of a Categories row. This is the primary key of the row in Categories that the Events row is related to. The Event/EventCategory relationship is many-to-one, so many event rows may have the same CategoryId value.
+
 The CategoryId property functions as a foreign key. EF will create a CategoryId column in the Event table. The value of this column for a given row will determine which row in the Category table is related to the given event. Our code is now set up so that each Event will know about its EventCategory object, and that relationship persists.
 It is very important that the ID field corresponding to the Category property is named CategoryId. This naming convention lets EF know that it should set Category to be the object with the Id value the same as CategoryId.
 
@@ -1160,11 +1163,93 @@ List<Event> events = context.Events.Include(e => e.Category).ToList(); // in the
 The Include method takes a lambda expression which specifies the property of each Event object that should be included in the query results. The effect of this additional method is that a JOIN query is performed between the Event and EventCategory tables, with Event.CategoryId being joined on EventCategory.Id.
 
 
+Example of a Path Variable using default mapping:
+
+public IActionResult Detail(int id) // if named id, will work as path variable
+{
+   Event theEvent = context.Events
+      .Include(e => e.Category)
+      .Single(e => e.Id == id);
+
+   EventDetailViewModel viewModel = new EventDetailViewModel(theEvent);
+   return View(viewModel);
+}
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+This template is "{controller=Home}/{action=Index}/{id?}". The last portion, {id?}, means that any path parameter following the action method will map to a method parameter named id.
+If we wanted to use a different URL structure, or a different method parameter name, we would need to include additional configuration. See the documentation on routing for more details.
+
+EF method Single:
+Event theEvent = context.Events
+   .Include(e => e.Category)
+   .Single(e => e.Id == id);
+This method takes a boolean lambda expression and filters the Context.Events collection down to the one event that satisfies e.Id == id. In other words, it finds the single event with Id matching the path parameter.
+We use Single instead of Find here because we also need to call Include to eagerly fetch the Category property. Include can not be chained with Find.
+
+Many-To-Many Relationship: many to many
+We need a Join Table inbetween our two tables.
+A join table consists of two columns, each of which is a foreign key column to another table. Each row in a join table represents a relationship between one row in each of the two tables being joined. This technique enables many-to-many relationships.
+
+To model a join table for Event and Tag classes, we will provide a collection navigation property on both sides of the relationship.
+public ICollection<Tag>? Tags { get; set; }
+Tags = new List<Tag>(); // in the constructor
+
+public ICollection<Event>? Events { get; set; }
+Events = new List<Event>(); // in the constructor
+
+Join Entity Type Configuration: EventDbContext
+	
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+   modelBuilder.Entity<Event>()
+         .HasMany(e => e.Tags)
+         .WithMany(e => e.Events)
+         .UsingEntity(j => j.ToTable("EventTags"));
+}
+The method OnModelCreating can be overridden from the base class, DbContext, in order to provide additional configuration for the data store. In this case, we add code that configures EventTag to have a composite primary key consisting of the properties/columns EventId and TagId.
+
+Example of creating a join table:
+[HttpPost]
+[Route("addevent")]
+public IActionResult ProcessAddEvent(AddEventTagViewModel addEventTagViewModel)
+{
+    if (!ModelState.IsValid)
+    {
+        return View("AddEvent", addEventTagViewModel);
+    }
+
+    int eventId = addEventTagViewModel.EventId;
+    int tagId = addEventTagViewModel.TagId;
+
+    Event anEvent = context.Events
+        .Include(e => e.Tags) // use include method for eager loading to include tags
+        .Where(e => e.Id == eventId) // find our event
+        .First(); //
+
+    Tag aTag = context.Tags
+        .Where(t => t.Id == tagId)
+        .First();
+
+    anEvent.Tags.Add(aTag); // add the tag to event
+    context.SaveChanges(); // save all changes
 
 
+    return Redirect("/event/detail/" + eventId);
+}
 
 
+A Note On Authentication In ASP.NET: Identity Framework
+Professional developers working with ASP.NET use ASP.NET Core Identity for authentication.
+Identity handles many aspects of the authentication process for you. This may hide steps that are important to understand as you learn about authentication.
+Some of the inner workings of Identity are beyond the scope of this course. Do not fear when troubleshooting!
+Identity has lots of different configuration options and can handle complex authentication setups.
 
+Adding Identity to an exisiting project is known as Scaffolding.
+
+Password hashing:
+Identity uses IdentityV3 which uses PBKDF2 as it's hashing algorithm.
 
 
 

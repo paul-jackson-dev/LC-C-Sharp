@@ -84,5 +84,17 @@ namespace CodingEvents.Controllers
 
             return Redirect("/event/detail/" + eventId);
         }
+
+        [HttpGet]
+        [Route("detail/{id}")]
+        public IActionResult Detail(int id)
+        {
+            Tag aTag = context.Tags
+                .Include(t => t.Events)
+                .Where(t => t.Id == id)
+                .First();
+
+            return View("Detail", aTag);
+        }
     }
 }

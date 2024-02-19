@@ -33,6 +33,9 @@
         <th>
             Category
         </th>
+        <th>
+            Tag an Event
+        </th>
     </tr>
     @foreach (Event singleEvent in Model)
     {
@@ -45,6 +48,7 @@
             <td>@singleEvent.Location</td>
             <td>@singleEvent.Email</td>
             <td>@singleEvent.Category.Name</td>
+            <td><a href="/tag/addevent/@singleEvent.Id">add a tag</a></td>
         </tr>
     }
 </table>

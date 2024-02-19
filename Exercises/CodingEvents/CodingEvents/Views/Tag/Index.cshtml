@@ -11,7 +11,7 @@ else{
     <li>
         @foreach (Tag tag in Model)
         {
-        <ul>@tag.Id : @tag.Name</ul>
+            <ul>@tag.Id : <a asp-controller="Tag" asp-action="Detail" asp-route-id="@tag.Id">@tag.Name</a></ul>
         }
     </li>
 }
