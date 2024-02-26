@@ -1251,10 +1251,292 @@ Adding Identity to an exisiting project is known as Scaffolding.
 Password hashing:
 Identity uses IdentityV3 which uses PBKDF2 as it's hashing algorithm.
 
+Installing Identity:
+Check the dotnet version the project is using. (dotnet sdk)
+If the .NET Core SDK listed on line 2 does not match the SDK specified in your csproj file, you may need to open up your global.json and edit it so that the SDK used by the project matches. 8.0.1
+
+dotnet --info
+
+For Identity, we need six packages from NuGet.
+Microsoft.EntityFrameworkCore.Design
+Microsoft.AspNetCore.Identity.UI
+Microsoft.AspNetCore.Identity.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.VisualStudio.Web.CodeGeneration.Design
+Microsoft.EntityFrameworkCore.Tools
+
+Add Identity through command line: can also be done using Add > New Scaffolded Item
+https://education.launchcode.org/csharp-web-dev-curriculum/authentication/reading/getting-starting-identity/index.html
+
+dotnet tool install --global dotnet-aspnet-codegenerator --version <YOUR .NET VERSION>
+
+dotnet aspnet-codegenerator identity -h
+
+dotnet aspnet-codegenerator identity --dbContext EventDbContext --files "Account.Register;Account.Login;Account.Logout;Account.RegisterConfirmation"
+
+In the above command, we used the option for files. Identity is a Razor Class Library so it comes with Razor pages preconfigured for registration, login, etc. This option means that we want the scaffolder to generate these files and add them to the solution, making it easier for us to customize these files in the future. The option for defaultUI means that we have no need to have these files in the solution and so we won’t have the ability to customize them.
+
+// update EventDbContext
+using CodingEvents.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+namespace CodingEvents.Data
+{
+    public class EventDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    {
+        public DbSet<Event> Events { get; set; } // DbContext is typically paired with DbSet which represents the collection of entities that we want to query through
+                                                 // this allows us to query our Event objects
+
+        public DbSet<EventCategory> Categories { get; set; }
+
+        public DbSet<Tag> Tags { get; set; }
+
+        public EventDbContext(DbContextOptions<EventDbContext> options) : base(options) // the constructor extends DbContextOptions which helps configure the data store
+        {                                                                               // pass DbContextOptions of EventDbContext types to DbContext //allows us to inherit from DbContextOptions
+        {
+        }
+
+        // set up relationships
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Event>()
+                .HasOne(p => p.Category)
+                .WithMany(b => b.events);
+
+            modelBuilder.Entity<Event>()
+                .HasMany(p => p.Tags)
+                .WithMany(p => p.Events)
+                .UsingEntity(j => j.ToTable("EventTags"));
+            base.OnModelCreating(modelBuilder); // to invoke Identity's implementation
+        }
+    }
+}
+
+You may note that we didn’t add any DbSet for IdentityUser like we did for other models in the application. This is not an oversight! With EventDbContext properly set up, we can run a migration and the database will add the appropriate tables for our authentication data.
+
+In Program.cs:
+
+add
+builder.Services.AddRazorPages(); // Adds Register, Login, Logout pages
+builder.Services.AddDefaultIdentity<IdentityUser> // Add a default Identity User
+
+add default Identity User: // comment out the old one to prevent errors
+builder.Services.AddDefaultIdentity<IdentityUser>
+(options =>
+{
+   options.SignIn.RequireConfirmedAccount = true;
+   options.Password.RequireDigit = false;
+   options.Password.RequiredLength = 10;
+   options.Password.RequireNonAlphanumeric = false;
+   options.Password.RequireUppercase = true;
+   options.Password.RequireLowercase = false;
+}).AddEntityFrameworkStores<EventDbContext>();
+
+add under app.UserAuthorization();
+app.UseAuthorization();
+app.MapRazorPages(); // add for auth //app.MapRazorPages(); specifies to the app that the Identity pages should follow the routing laid out in _LoginPartial.cshtml.
+app.MapControllers(); // add for auth
+
+might be necessary to delete data in Areas > Identity > Data
+also, remove the new connectionString that was generated when we auto-generated code
+
+In _LoginPartial.cshtml
+We can place a partial view anywhere we want. 
+<partial name="_LoginPartial" />
 
 
+	
+@using Microsoft.AspNetCore.Identity
+@using CodingEventsDemo.Data
 
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(IdentityUser))
+{
+   <li class="nav-item">
+      <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(IdentityUser)!</a>
+   </li>
+   <li class="nav-item">
+      <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+         <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+      </form>
+   </li>
+}
+else
+{
+   <li class="nav-item">
+      <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="Account/Register">Register</a>
+   </li>
+   <li class="nav-item">
+      <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+   </li>
+}
+</ul>
+
+UserManager deals with user information in the database.
+SignInManager deals with users signing in.
+
+Registration and Login:
+https://education.launchcode.org/csharp-web-dev-curriculum/authentication/reading/registrations-and-logins/index.html
+Registration:
+Razor class library. see Register.cshtml.cs for Controllers and Methods
+Task<IActionResult> is an asynchronous return type. The action of adding a new user to a database is asynchronous so our function must return an asynchronous action.
+We can still use ModelState.IsValid to make sure that the user’s input matches our validation requirements.
+UserManager comes back into play here for the addition of the new user to the database. The method used for that action is called CreateAsync(). The new user’s password is hashed as part of this method, so there aren’t any additional method calls here.
+
+Login:
+Task<IActionResult> is back meaning the action of signing in is asynchronous.
+If the form input is valid, then we want to try and sign in the user.
+SignInManager has a method called PasswordSignInAsync() which takes in parameters like the inputted email and password and compares those values to the values stored in the database.
+
+Additional Identity options:
+basic requirements:
+https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.passwordoptions?view=aspnetcore-6.0
+
+addtional user information:
+https://learn.microsoft.com/en-us/aspnet/core/security/authentication/add-user-data?view=aspnetcore-6.0&tabs=visual-studio
+Customize user information
+Customize user roles
+Customize the UI
+Add new settings to user passwords
+Change the default settings around user sign-in
+
+Identity and Authorization:
+[Authorize]
+is an attribute that limits access to content to only logged in users. [Authorize] can be used for a specific method or a whole controller.
+
+[AllowAnonymous] 
+is an attribute that allows any viewer to access content. This is the default state, so
+
+We can [Authorize] an entire controller to prevent actions, and then [AllowAnonymous] individual methods for general use
+
+Ie: every user can see available events, but only logged-in users can add, edit, or delete events!
+
+REST:
+REpresentational State Transfer
+Responsibilities of a Web API
+The chief responsibility of a web API is to exchange representations of data with a corresponding client application. APIs are also gatekeepers, maintaining rules about how end-users may interact with application data.
+
+When a client application receives data, it injects that data into its HTML using JavaScript. This all occurs from within a browser. This approach is called client-side rendering because the web API only sends data, the HTML is assembled on the user’s end.
+
+Transference of Data:
+A request for data comes from a client application to the API.
+A controller file in the API catches the request.
+The controller determines if the request is valid.
+The controller transfers data from the database to an object, via the ORM.
+The controller transforms the object into a package the client application can work with.
+The controller responds to the client with the packaged data.
+
+Representation of Data: (Universal Representation)
+JSON
+
+Basics of HTTP:
+Is a stateless request/response protocol.
+Requests and responses may include HTTP bodies.
+Responses always contain a three digit HTTP status code.
+Requests and responses always include HTTP headers.
+
+State:
+Before creating: Empty state
+After creating: Initial state
+After updating: New state
+After deleting: Empty state
+
+What is a Representation?
+JSON is a data format that provides structure, portability and compatibility. For these reasons, JSON is the standard representation used when transferring state between a client application and an API.
+The process of converting an object representation to a JSON representation is called JSON serialization.
+The inverse process, where JSON is parsed, or converted back to object representation, is called JSON deserialization.
+
+Transferring a Representation of State:
+the client can:
+Read: request the current representation of state
+Create & Update: transition to a new state by sending a new representation
+Delete: transition to an empty state by requesting its removal
+
+API to defines the contract, or expose:
+the types of state, or resources, the client can interact with
+which (CRUD) interactions are supported for each resource
+
+Resources
+a resource is a type of object that an API allows client applications to interact with
+Entity: a single resource that is uniquely identifiable in a collection.
+Collection: entities of the same resource type treated as a whole.
+
+In RESTful design, an individual entity only exists as a part of a collection. A change to the state of an entity inherently changes the state of the collection it is a part of.
+In order to fulfill these operations, you need to know:
+what collection the entity belongs to
+how to uniquely identify the entity within the collection
+
+Rest Fundamentals:
+State: data that can change (transition) through interactions between an API and its client
+Representation: the convertible format that enables state to be transferred and used by the client and API
+Resource: the representation of a type of state (as an entity or collection) that the API exposes to its client for interaction
+
+Shapes:
+Shape describes the input or output of an API in terms of its fields and data types. There are no rules for how shapes should be defined. However, the goal should be to describe shapes in a way that is easy to understand. For this reason, shapes are typically shown in a way that is similar to the representation format. Because we use JSON as the representation format, the JSON data types are used.
+You can think of shape like a class definition in an object-oriented codebase:
+	
+public class CodingEvent {
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public DateTime Date { get; set; }
+}
+
+//The output resource shape of a CodingEvent entity:	
+CodingEvent {
+    Id: integer
+    Title: string
+    Description: string
+    Date: string (ISO 8601 date format)
+}
+
+// JSON representation:
+{
+    "Id": 1,
+    "Title": "Halloween Hackathon!",
+    "Description": "A gathering of nerdy ghouls to work on GitHub Hacktoberfest contributions",
+    "Date": "2020-10-31"
+}
+
+Some of the common fields the API is responsible for managing:
+the unique identifier (Id)
+the “created on” or “last updated” timestamp
+links for relationships between resources
+
+Endpoints:
+An API endpoint refers to the HTTP path and method that defines the location of a resource and the action to take on its state.
+path: the noun that identifies the resource
+method: the verb, or action, to take on the resource’s state
+
+endpoint naming conventions:
+is lowercase and separated by underscores if necessary
+adequately describes the resource in as few characters as necessary
+is a plural noun (actions are described by the method of the endpoint)
+
+CRUD Operations & HTTP Methods:
+HTTP Method	CRUD Operation
+POST		Create
+GET		Read
+PUT/PATCH	Update
+DELETE		Delete
+
+Success Status Codes:
+HTTP Method	Status Code	Message	Response
+POST	201	Created		Resource entity and location header
+GET	200	OK		Resource entity or collection
+DELETE	204	No Content	empty response body
+
+Failure Status Codes:
+Status Code	Message	Correction
+400	Bad Request	Client must fix errors in their request body
+401	Unauthorized	Client must authenticate first
+403	Forbidden	An Authenticated client in not allowed to perform the requested action
+404	Not Found	The path to identify the resource is incorrect or the resource does not exist
 
 
 
