@@ -1538,9 +1538,7 @@ Status Code	Message	Correction
 403	Forbidden	An Authenticated client in not allowed to perform the requested action
 404	Not Found	The path to identify the resource is incorrect or the resource does not exist
 
-
-
-
+Swagger is a popular tool API developers use to include fast documentation for their API codebase. 
 
 
 
